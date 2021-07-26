@@ -50,6 +50,7 @@ def handle_posts():
         posts = BlogModel.query.all()
         results = [
             {
+                "id": post.id,
                 "title": post.title,
                 "content": post.content,
                 "tags": post.tags,
@@ -57,3 +58,16 @@ def handle_posts():
             } for post in posts]
 
         return {"count": len(results), "posts": results}
+
+@app.route('/posts/<int:post_id>', methods=['GET'])
+def show_post(post_id):
+    post = BlogModel.query.get_or_404(post_id)
+    response = {
+        "id": post.id,
+        "title": post.title,
+        "content": post.content,
+        "tags": post.tags,
+        "created": post.date_created,
+    }
+    return {"post": response}
+
