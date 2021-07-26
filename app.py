@@ -71,3 +71,20 @@ def show_post(post_id):
     }
     return {"post": response}
 
+@app.route('/posts/<int:post_id>', methods=['DELETE'])
+def delete_post(post_id):
+    post = BlogModel.query.get_or_404(post_id)
+    db.session.delete(post)
+    db.session.commit()
+    return{"message": f"Post {post.title} successfully deleted"}
+
+@app.route('/posts/<int:post_id>', methods=['PUT'])
+def edit_post(post_id):
+    post = BlogModel.query.get_or_404(post_id)
+    data = request.get_json()
+    post.title = data['title']
+    post.content = data['content']
+    post.tags = data['tags']
+    db.session.add(post)
+    db.session.commit()
+    return {"message": f"Post {post.title} successfully updated"}
