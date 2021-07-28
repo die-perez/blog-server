@@ -5,10 +5,12 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy import func
+from flask_cors import CORS
 
 # config app
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = os.environ['SQLALCHEMY_DATABASE_URI']
+CORS(app)
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
 
@@ -47,7 +49,7 @@ def handle_posts():
             return{"error": "the request payload is not in JSON format"}
 
     elif request.method == 'GET':
-        posts = BlogModel.query.all()
+        posts = BlogModel.query.order_by(BlogModel.id.desc()).all()
         results = [
             {
                 "id": post.id,
